@@ -14,6 +14,7 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await Initializer.init();
+
   runApp(const AwesomeApp());
 }
 
