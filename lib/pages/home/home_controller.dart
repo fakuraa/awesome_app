@@ -11,7 +11,7 @@ import 'package:hive/hive.dart';
 class HomeController extends BaseController<Picture> {
   int viewMenu = 0;
   EasyRefreshController refreshController = EasyRefreshController();
-  final _box = Hive.box<Storage>((Storage).toString());
+  var box = Hive.box<Storage>((Storage).toString());
   var cacheKey = (Picture).toString();
 
   @override
@@ -39,11 +39,11 @@ class HomeController extends BaseController<Picture> {
   loadData() async {
     try {
       loadingState();
-      var result = await ApiCore.call.get<Response>(
+      var result = await ApiCore.call.get<BaseResponse>(
         endpoint: '/curated',
         queryParameters: {'page': page, 'perPage': perPage},
         cancelToken: cancelToken,
-        fromJson: (data) => Response.fromJson(data),
+        fromJson: (data) => BaseResponse.fromJson(data),
       );
       hasNext.value = (result.nextPage ?? "").isNotEmpty;
 
@@ -53,6 +53,7 @@ class HomeController extends BaseController<Picture> {
       } else {
         dataList.addAll(result.data ?? []);
       }
+      successState();
     } catch (error) {
       showError(errorMessage: error.toString());
     }
@@ -64,7 +65,7 @@ class HomeController extends BaseController<Picture> {
   }
 
   Future<void> getCache() async {
-    var cache = _box.get(cacheKey);
+    var cache = box.get(cacheKey);
     if (cache != null && cache.toString().isNotEmpty) {
       dataList.value = List<Picture>.from(
           json.decode(cache.value).map((x) => Picture.fromJson(x)));
@@ -73,10 +74,9 @@ class HomeController extends BaseController<Picture> {
   }
 
   Future<void> saveCacheAndFinish() async {
-    _box.put(
+    box.put(
         cacheKey,
         Storage(
             key: cacheKey, expiredDate: null, value: json.encode(dataList)));
-    successState();
   }
 }

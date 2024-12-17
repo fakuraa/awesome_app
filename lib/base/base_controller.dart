@@ -14,7 +14,7 @@ abstract class BaseController<T> extends GetxController {
   get statusData;
   bool get isUsingList => statusData is List;
 
-  final cancelToken = CancelToken();
+  var cancelToken = CancelToken();
   void refreshPage();
   void loadNextPage() {}
   Rx<RefresherStatus> status = Rx(RefresherStatus.initial);

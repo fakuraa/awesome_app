@@ -11,7 +11,7 @@ class ApiCore {
 
   static void initialize() {
     call = ApiCore._internal(
-      Dio(BaseOptions(baseUrl: Environment.base_url))
+      Dio(BaseOptions(baseUrl: Environment.baseUrl))
         ..interceptors.add(APILogInterceptor()),
     );
   }
