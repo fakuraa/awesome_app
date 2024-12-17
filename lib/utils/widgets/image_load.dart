@@ -114,7 +114,7 @@ class ImageLoad extends StatelessWidget {
         color: Colors.grey.shade200,
         shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
       ),
-      child: const Icon(Icons.broken_image, color: Colors.redAccent),
+      child: Icon(Icons.broken_image, color: Colors.redAccent, size: 55),
     );
   }
 }

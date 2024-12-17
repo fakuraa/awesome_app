@@ -1,5 +1,6 @@
 import 'package:awesome_app/base/refresher_status.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 abstract class BaseController<T> extends GetxController {
@@ -8,7 +9,7 @@ abstract class BaseController<T> extends GetxController {
 
   Rx<int> page = Rx(1);
   Rx<bool> hasNext = Rx(false);
-  Rx<int> perPage = Rx(10);
+  Rx<int> perPage = Rx(20);
 
   get statusData;
   bool get isUsingList => statusData is List;
@@ -43,5 +44,31 @@ abstract class BaseController<T> extends GetxController {
   void errorState() {
     status.value = RefresherStatus.failed;
     update();
+  }
+
+  void showError({required String errorMessage}) {
+    Get.closeCurrentSnackbar();
+    Get.rawSnackbar(
+      backgroundColor: Colors.red.shade300,
+      borderRadius: 8,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.all(16),
+      snackPosition: SnackPosition.TOP,
+      titleText: Text(
+        "Oops",
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      messageText: Text(
+        errorMessage,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+        ),
+      ),
+    );
   }
 }
