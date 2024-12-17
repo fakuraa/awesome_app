@@ -12,13 +12,10 @@ class ResponsiveGrid extends StatelessWidget {
   int _getColumnCount(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     if (screenWidth < 650) {
-      // Mobile: 2 columns
       return 2;
     } else if (screenWidth < 1100) {
-      // Tablet: 3 columns
       return 3;
     } else {
-      // Desktop: 5 columns
       return 5;
     }
   }

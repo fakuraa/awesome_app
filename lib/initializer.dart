@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:awesome_app/base/base_service.dart';
 import 'package:awesome_app/model/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -9,6 +10,7 @@ class Initializer {
   static Future<void> init() async {
     try {
       await Initializer.initHive();
+      ApiCore.initialize();
     } catch (err) {
       rethrow;
     }
