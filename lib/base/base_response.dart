@@ -2,7 +2,7 @@ import 'package:awesome_app/model/picture.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
-class Response {
+class BaseResponse {
   @JsonKey(name: 'status')
   int status;
   @JsonKey(name: 'message')
@@ -22,7 +22,7 @@ class Response {
   @JsonKey(name: "prev_page")
   String? prevPage;
 
-  Response({
+  BaseResponse({
     required this.status,
     required this.message,
     required this.domain,
@@ -34,8 +34,8 @@ class Response {
     this.data,
   });
 
-  factory Response.fromJson(Map<String, dynamic> json) {
-    return Response(
+  factory BaseResponse.fromJson(Map<String, dynamic> json) {
+    return BaseResponse(
       status: json["status"],
       message: json["message"],
       domain: json["domain"],
