@@ -1,4 +1,5 @@
 import 'package:awesome_app/initializer.dart';
+import 'package:awesome_app/routes/routes.dart';
 import 'package:awesome_app/themes/app_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,6 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await Initializer.init();
-
   runApp(const AwesomeApp());
 }
 
@@ -25,8 +25,8 @@ class AwesomeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: "",
-      getPages: [],
+      initialRoute: Routes.initial,
+      getPages: Routes.all,
       theme: AppTheme.buildThemeData(false),
     );
   }

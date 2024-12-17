@@ -135,8 +135,12 @@ class $LibResourcesImagesGen {
   AssetGenImage get logo =>
       const AssetGenImage('lib/resources/images/logo.png');
 
+  /// File path: lib/resources/images/logo_29.png
+  AssetGenImage get logo29 =>
+      const AssetGenImage('lib/resources/images/logo_29.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [bgAppbar, logo];
+  List<AssetGenImage> get values => [bgAppbar, logo, logo29];
 }
 
 class Assets {
