@@ -3,11 +3,13 @@ import 'package:awesome_app/base/base_response.dart';
 import 'package:awesome_app/model/picture.dart';
 import 'package:awesome_app/model/storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mockito/mockito.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'mock_path_provider_platform.dart';
 
 class MockApiCore extends Mock {
   Future<BaseResponse> get<T>({
@@ -23,20 +25,16 @@ void main() {
   late HomeController homeController;
   late MockApiCore mockApiCore;
   late MockBox mockBox;
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   WidgetsFlutterBinding.ensureInitialized();
   setUp(() async {
-    await Hive.initFlutter();
+    MockPathProviderPlatform instance = MockPathProviderPlatform();
+    disablePathProviderPlatformOverride = true;
 
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(
-      const MethodChannel('plugins.flutter.io/path_provider'),
-      (MethodCall methodCall) async {
-        if (methodCall.method == 'getApplicationDocumentsDirectory') {
-          return '/mock/directory';
-        }
-        return null;
-      },
-    );
+    Hive
+      ..init(await instance.getExternalStoragePath())
+      ..registerAdapter(StorageAdapter());
 
     mockBox = MockBox();
     when(Hive.openBox<Storage>("Storage")).thenAnswer((_) async => mockBox);
