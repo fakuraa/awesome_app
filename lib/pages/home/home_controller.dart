@@ -2,17 +2,11 @@ import 'dart:convert';
 
 import 'package:awesome_app/base/base_controller.dart';
 import 'package:awesome_app/base/base_response.dart';
-import 'package:awesome_app/base/base_service.dart';
 import 'package:awesome_app/model/picture.dart';
 import 'package:awesome_app/model/storage.dart';
-import 'package:easy_refresh/easy_refresh.dart';
-import 'package:hive/hive.dart';
 
 class HomeController extends BaseController<Picture> {
   int viewMenu = 0;
-  EasyRefreshController refreshController = EasyRefreshController();
-  var box = Hive.box<Storage>((Storage).toString());
-  var cacheKey = (Picture).toString();
 
   @override
   void onInit() {
@@ -30,7 +24,7 @@ class HomeController extends BaseController<Picture> {
     update();
   }
 
-  void loadMore() {
+  Future<void> loadMore() async {
     page.value += 1;
     loadData();
     update();
@@ -39,22 +33,22 @@ class HomeController extends BaseController<Picture> {
   loadData() async {
     try {
       loadingState();
-      var result = await ApiCore.call.get<BaseResponse>(
+      var result = await service?.get<BaseResponse>(
         endpoint: '/curated',
-        queryParameters: {'page': page, 'perPage': perPage},
+        queryParameters: {'page': page.value, 'per_page': perPage.value},
         cancelToken: cancelToken,
         fromJson: (data) => BaseResponse.fromJson(data),
       );
-      hasNext.value = (result.nextPage ?? "").isNotEmpty;
-
+      hasNext.value = (result?.nextPage ?? "").isNotEmpty;
       if (page.value == 1) {
         saveCacheAndFinish();
-        dataList.value = result.data ?? [];
+        dataList.value = result?.data ?? [];
       } else {
-        dataList.addAll(result.data ?? []);
+        dataList.value = [...dataList, ...(result?.data ?? [])];
       }
       successState();
     } catch (error) {
+      print('Error in loadData: $error');
       showError(errorMessage: error.toString());
     }
   }
@@ -65,7 +59,7 @@ class HomeController extends BaseController<Picture> {
   }
 
   Future<void> getCache() async {
-    var cache = box.get(cacheKey);
+    var cache = box?.get(cacheKey);
     if (cache != null && cache.toString().isNotEmpty) {
       dataList.value = List<Picture>.from(
           json.decode(cache.value).map((x) => Picture.fromJson(x)));
@@ -74,9 +68,11 @@ class HomeController extends BaseController<Picture> {
   }
 
   Future<void> saveCacheAndFinish() async {
-    box.put(
+    box?.put(
         cacheKey,
         Storage(
-            key: cacheKey, expiredDate: null, value: json.encode(dataList)));
+            key: cacheKey ?? "",
+            expiredDate: null,
+            value: json.encode(dataList)));
   }
 }
